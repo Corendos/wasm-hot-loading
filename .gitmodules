@@ -1,0 +1,21 @@
+[submodule "wasm-micro-runtime"]
+	path = deps/wasm-micro-runtime
+	url = git@github.com:bytecodealliance/wasm-micro-runtime.git
+[submodule "CLI11"]
+	path = deps/CLI11
+	url = git@github.com:CLIUtils/CLI11.git
+[submodule "fmt"]
+	path = deps/fmt
+	url = git@github.com:fmtlib/fmt.git
+[submodule "djinni-generator"]
+	path = deps/djinni-generator
+	url = git@github.com:cross-language-cpp/djinni-generator.git
+[submodule "djinni-support-lib"]
+	path = deps/djinni-support-lib
+	url = git@github.com:cross-language-cpp/djinni-support-lib.git
+[submodule "curl"]
+	path = deps/curl
+	url = git@github.com:curl/curl.git
+[submodule "boringssl"]
+	path = deps/boringssl
+	url = git@github.com:google/boringssl.git

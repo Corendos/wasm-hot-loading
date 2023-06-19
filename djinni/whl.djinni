@@ -1,0 +1,32 @@
+# Configuration to instantiate a wasm_hot_loading instance.
+configuration = record {
+    # The URL to retrieve the Wasm module to load.
+    sample_module_url: string;
+    # The public key used to verify module's signature.
+    public_key: string;
+    # The stack size to use for the Wasm execution environment.
+    wasm_stack_size: i32;
+    # The heap size to use for the Wasm execution environment.
+    wasm_heap_size: i32;
+}
+
+# An instance of the sample SDK.
+wasm_hot_loading = interface +c {
+    # Create an instance using the provided configuration.
+    static create(configuration: configuration): wasm_hot_loading;
+
+    # Register a listener for state change events.
+    register_state_listener(listener: state_listener);
+
+    # Trigger a query to be called back with the current state.
+    get_state();
+
+    # Update the SDK internal values.
+    update(name: string, value: i32);
+}
+
+# Interface receiving state from the SDK.
+state_listener = interface +j {
+    # Called back when a state request has been answered.
+    on_new_state(name: string, value: i32);
+}

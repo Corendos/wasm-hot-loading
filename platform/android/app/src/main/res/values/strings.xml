@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WasmHotLoading</string>
+    <string name="nameTextEditLabelString">Name</string>
+    <string name="counterTextEditLabelString">Counter</string>
+    <string name="updateButtonString">Update</string>
+    <string name="queryButtonString">Query</string>
+    <string name="currentStateTextViewLabelString">Current State</string>
+    <string name="sampleModuleUrlTextEditLabelString">Module URL</string>
+    <string name="loadButtonString">Load</string>
+    <string name="unloadButtonString">Unload</string>
+    <string name="stateStringTemplate">Name: \"%1$s\" - Value: %2$d</string>
+</resources>

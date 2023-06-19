@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/nameTextEditLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:labelFor="@+id/nameTextEdit"
+        android:text="@string/nameTextEditLabelString"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <EditText
+        android:id="@+id/nameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextEditLabel"
+        tools:layout_editor_absoluteX="16dp"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/counterTextEditLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:labelFor="@+id/counterNumberPicker"
+        android:text="@string/counterTextEditLabelString"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextEdit"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <NumberPicker
+        android:id="@+id/counterNumberPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/counterTextEditLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/updateButtonString"
+        app:layout_constraintEnd_toStartOf="@+id/queryButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/counterNumberPicker" />
+
+    <Button
+        android:id="@+id/queryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/queryButtonString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/updateButton"
+        app:layout_constraintTop_toBottomOf="@+id/counterNumberPicker" />
+
+    <TextView
+        android:id="@+id/currentStateTextViewLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:labelFor="@+id/currentStateTextView"
+        android:text="@string/currentStateTextViewLabelString"
+        app:layout_constraintTop_toBottomOf="@+id/queryButton"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/currentStateTextView"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintTop_toBottomOf="@+id/currentStateTextViewLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/sampleModuleUrlTextEditLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:labelFor="@id/sampleModuleUrlTextEdit"
+        android:text="@string/sampleModuleUrlTextEditLabelString"
+        app:layout_constraintTop_toBottomOf="@+id/currentStateTextView"
+        tools:layout_editor_absoluteX="108dp" />
+
+    <EditText
+        android:id="@+id/sampleModuleUrlTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textUri"
+        app:layout_constraintTop_toBottomOf="@+id/sampleModuleUrlTextEditLabel"
+        tools:layout_editor_absoluteX="16dp"
+        android:text="http://192.168.55.55:5000/wasm/module.wasm"/>
+
+    <Button
+        android:id="@+id/loadButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/loadButtonString"
+        app:layout_constraintEnd_toStartOf="@+id/unloadButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sampleModuleUrlTextEdit" />
+
+    <Button
+        android:id="@+id/unloadButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/unloadButtonString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/loadButton"
+        app:layout_constraintTop_toBottomOf="@+id/sampleModuleUrlTextEdit" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

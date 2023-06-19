@@ -1,0 +1,9 @@
+compile_commands.json
+pyrightconfig.json
+.cache/
+.vscode/
+cmake-build/
+build/
+venv/
+
+*.pyc
