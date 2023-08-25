@@ -41,7 +41,7 @@ git submodules update --init --recursive
 
 The required dependencies are:
 * [CMake](https://cmake.org/download/) - Any version >= 3.19 will work and you'll get an error message otherwise.
-* [Zig](https://ziglang.org/download/) - Zig is a pre-1.0 language so it's moving fast. This sample was tested with version `0.11.0-dev.3132+465272921`.
+* [Zig](https://ziglang.org/download/) - Zig is a pre-1.0 language so it's moving fast. This sample was tested with version `0.11.0`.
 * [Go](https://go.dev/doc/install) - Go language (This is a transitive dependency of BoringlSSL).
 
 ## Building the Sample Core

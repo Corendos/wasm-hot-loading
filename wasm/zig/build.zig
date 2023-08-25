@@ -25,8 +25,9 @@ pub fn build(b: *std.Build) !void {
     });
     wasm_module.rdynamic = true;
 
-    const wasm_module_install = b.addInstallArtifact(wasm_module);
-    wasm_module_install.dest_dir = std.Build.InstallDir{ .lib = {} };
+    const wasm_module_install = b.addInstallArtifact(wasm_module, std.Build.Step.InstallArtifact.Options{
+        .dest_dir = .{ .override = .{ .lib = {} } },
+    });
 
     b.getInstallStep().dependOn(&wasm_module_install.step);
 }
