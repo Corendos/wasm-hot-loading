@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 #include <whl/defer.hpp>
 #include <whl/logger.hpp>
 #include <whl/utils.hpp>

@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 import os
 import json
 import base64

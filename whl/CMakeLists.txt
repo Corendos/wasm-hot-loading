@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 set(WHL_SOURCES
     src/whl/task/task_scheduler.cpp
     src/whl/network/http.cpp

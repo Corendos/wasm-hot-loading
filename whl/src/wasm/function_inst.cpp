@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 #include <wasm/function_inst.hpp>
 
 namespace wasm {

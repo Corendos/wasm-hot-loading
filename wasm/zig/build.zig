@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 const std = @import("std");
 
 const wasm_arch = .wasm32;

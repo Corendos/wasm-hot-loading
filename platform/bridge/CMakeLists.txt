@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 set(DJINNI_PLATFORM_SOURCES "")
 
 if (ANDROID)

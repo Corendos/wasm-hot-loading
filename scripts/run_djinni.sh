@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 dir=${0%/*}
 root_dir=$(readlink -f "$dir/../")
 

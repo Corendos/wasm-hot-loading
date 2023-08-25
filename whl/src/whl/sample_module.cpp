@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 #include <whl/logger.hpp>
 #include <whl/messages_fmt.hpp>
 #include <whl/sample_module.hpp>

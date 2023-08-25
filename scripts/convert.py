@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 import itertools
 import argparse
 from typing import Iterator

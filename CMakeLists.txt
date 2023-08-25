@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 cmake_minimum_required(VERSION 3.19)
 
 project(wasm-hot-loading)

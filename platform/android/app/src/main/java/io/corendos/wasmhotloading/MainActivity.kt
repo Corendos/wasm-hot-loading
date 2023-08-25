@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 package io.corendos.wasmhotloading
 
 import android.os.Bundle

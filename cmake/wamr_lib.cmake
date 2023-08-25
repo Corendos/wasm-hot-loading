@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 # Set build platform for WAMR
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (WAMR_BUILD_PLATFORM "linux")

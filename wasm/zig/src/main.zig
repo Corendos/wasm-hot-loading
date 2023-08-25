@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 const std = @import("std");
 
 extern fn repeat_task(function_index: i32, userdata: ?*anyopaque, delay_us: u32) u32;

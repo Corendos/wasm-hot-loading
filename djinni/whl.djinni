@@ -1,3 +1,6 @@
+# Copyright 2023 - Corentin Godeau
+# SPDX-License-Identifier: MIT
+
 # Configuration to instantiate a wasm_hot_loading instance.
 configuration = record {
     # The URL to retrieve the Wasm module to load.

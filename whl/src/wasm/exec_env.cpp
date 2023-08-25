@@ -1,3 +1,6 @@
+// Copyright 2023 - Corentin Godeau
+// SPDX-License-Identifier: MIT
+
 #include <wasm/exec_env.hpp>
 #include <wasm/module_instance.hpp>
 #include <whl/logger.hpp>
