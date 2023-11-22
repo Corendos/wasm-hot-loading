@@ -15,20 +15,18 @@ auto Configuration::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::Local
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.sample_module_url)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.public_key)),
-                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.wasm_stack_size)),
-                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.wasm_heap_size)))};
+                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.wasm_stack_size)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto Configuration::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 5);
+    ::djinni::JniLocalScope jscope(jniEnv, 4);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<Configuration>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_sampleModuleUrl)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_publicKey)),
-            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_wasmStackSize)),
-            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_wasmHeapSize))};
+            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_wasmStackSize))};
 }
 
 } }  // namespace whl::bridge

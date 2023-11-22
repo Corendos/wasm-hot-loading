@@ -9,13 +9,11 @@
 - (nonnull instancetype)initWithSampleModuleUrl:(nonnull NSString *)sampleModuleUrl
                                       publicKey:(nonnull NSString *)publicKey
                                   wasmStackSize:(int32_t)wasmStackSize
-                                   wasmHeapSize:(int32_t)wasmHeapSize
 {
     if (self = [super init]) {
         _sampleModuleUrl = [sampleModuleUrl copy];
         _publicKey = [publicKey copy];
         _wasmStackSize = wasmStackSize;
-        _wasmHeapSize = wasmHeapSize;
     }
     return self;
 }
@@ -23,17 +21,15 @@
 + (nonnull instancetype)configurationWithSampleModuleUrl:(nonnull NSString *)sampleModuleUrl
                                                publicKey:(nonnull NSString *)publicKey
                                            wasmStackSize:(int32_t)wasmStackSize
-                                            wasmHeapSize:(int32_t)wasmHeapSize
 {
     return [(Configuration*)[self alloc] initWithSampleModuleUrl:sampleModuleUrl
                                                        publicKey:publicKey
-                                                   wasmStackSize:wasmStackSize
-                                                    wasmHeapSize:wasmHeapSize];
+                                                   wasmStackSize:wasmStackSize];
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %p sampleModuleUrl:%@ publicKey:%@ wasmStackSize:%@ wasmHeapSize:%@>", self.class, (void *)self, self.sampleModuleUrl, self.publicKey, @(self.wasmStackSize), @(self.wasmHeapSize)];
+    return [NSString stringWithFormat:@"<%@ %p sampleModuleUrl:%@ publicKey:%@ wasmStackSize:%@>", self.class, (void *)self, self.sampleModuleUrl, self.publicKey, @(self.wasmStackSize)];
 }
 
 @end

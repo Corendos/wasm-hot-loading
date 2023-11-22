@@ -3,6 +3,7 @@
 
 #include <whl/configuration.hpp>
 #include <whl/default_sample_module.hpp>
+#include <whl/logger.hpp>
 #include <whl/messages_fmt.hpp>
 #include <whl/network/http.hpp>
 #include <whl/sample_module.hpp>
@@ -10,6 +11,8 @@
 #include <whl/thread.hpp>
 #include <whl/utils.hpp>
 #include <whl/wasm_hot_loading.hpp>
+
+#include <wasm/environment.hpp>
 
 namespace whl {
 
@@ -52,24 +55,24 @@ retrieve_wasm_module(const std::string &wasm_module_url,
  * If a path to a file is given it will load from it, otherwise it falls back on
  * the embedded default module.
  * */
-std::optional<wasm::Module> load_module(const std::string &wasm_module_url,
+std::optional<wasm::Module> load_module(wasm::Environment &environment,
+                                        const std::string &wasm_module_url,
                                         const std::string &public_key) {
   if (wasm_module_url.empty()) {
     logger::info("No module URL specified, fallback on embedded module");
-    return wasm::Module::load_from_memory((const uint8_t *)default_wasm_module,
-                                          sizeof(default_wasm_module));
+    return environment.parse_module(
+        std::string(default_wasm_module, sizeof(default_wasm_module)));
   }
 
   auto module_opt = retrieve_wasm_module(wasm_module_url, public_key);
   if (!module_opt.has_value()) {
     logger::info("Failed to load module with the specified URL, fallback on "
                  "embedded module");
-    return wasm::Module::load_from_memory((const uint8_t *)default_wasm_module,
-                                          sizeof(default_wasm_module));
+    return environment.parse_module(
+        std::string(default_wasm_module, sizeof(default_wasm_module)));
   }
 
-  return wasm::Module::load_from_memory((const uint8_t *)module_opt->data(),
-                                        module_opt->size());
+  return environment.parse_module(std::move(module_opt.value()));
 }
 
 class GlobalListener {
@@ -79,8 +82,10 @@ public:
 
 class WasmHotLoadingImpl : public WasmHotLoading, public GlobalListener {
 public:
-  WasmHotLoadingImpl(wasm::Module module, const Configuration &configuration) {
-    wasm_runtime_init_thread_env();
+  WasmHotLoadingImpl(wasm::Environment environment, wasm::Runtime runtime,
+
+                     const Configuration &configuration)
+      : m_environment{std::move(environment)}, m_runtime{std::move(runtime)} {
     m_sample_scheduler = std::make_unique<
         task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>>(
         "sample");
@@ -89,13 +94,10 @@ public:
             "global");
     SampleModuleConfiguration sample_module_configuration{
         .wasm_stack_size = static_cast<uint32_t>(configuration.wasm_stack_size),
-        .wasm_heap_size = static_cast<uint32_t>(configuration.wasm_heap_size),
     };
 
-    m_module = std::move(module);
-
     m_sample_module = std::make_unique<SampleModule>(
-        m_module, sample_module_configuration, m_sample_scheduler.get(),
+        m_runtime, sample_module_configuration, m_sample_scheduler.get(),
         m_global_scheduler.get());
 
     m_global_scheduler->set_listener(this);
@@ -107,8 +109,6 @@ public:
   }
 
   ~WasmHotLoadingImpl() override {
-    wasm_runtime_init_thread_env();
-
     m_sample_scheduler->stop();
     if (m_sample_scheduler_thread.joinable()) {
       m_sample_scheduler_thread.join();
@@ -118,8 +118,6 @@ public:
     if (m_global_scheduler_thread.joinable()) {
       m_global_scheduler_thread.join();
     }
-
-    m_sample_module.reset();
   }
 
   void register_state_listener(
@@ -163,6 +161,8 @@ public:
   }
 
 private:
+  wasm::Environment m_environment;
+  wasm::Runtime m_runtime;
   std::unique_ptr<task::Scheduler<GlobalMessage, GlobalListener>>
       m_global_scheduler;
   whl::Thread m_global_scheduler_thread;
@@ -170,24 +170,35 @@ private:
       task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>>
       m_sample_scheduler;
   whl::Thread m_sample_scheduler_thread;
-  wasm::Module m_module{};
   std::unique_ptr<SampleModule> m_sample_module{nullptr};
   std::shared_ptr<StateListener> m_state_listener{nullptr};
 };
 
 std::shared_ptr<WasmHotLoading>
 WasmHotLoading::create(const Configuration &configuration) {
-  whl::SampleModule::register_native_exports();
-
-  auto wasm_module =
-      load_module(configuration.sample_module_url, configuration.public_key);
-
-  if (!wasm_module.has_value()) {
+  auto maybe_environment = wasm::Environment::create();
+  if (!maybe_environment.has_value()) {
     return nullptr;
   }
 
-  return std::make_shared<WasmHotLoadingImpl>(std::move(wasm_module.value()),
-                                              configuration);
+  auto maybe_runtime =
+      maybe_environment->create_runtime(configuration.wasm_stack_size);
+  if (!maybe_runtime.has_value()) {
+    return nullptr;
+  }
+
+  std::optional<wasm::Module> maybe_module =
+      load_module(*maybe_environment, configuration.sample_module_url,
+                  configuration.public_key);
+  if (!maybe_module.has_value()) {
+    return nullptr;
+  }
+
+  maybe_runtime->load_module(std::move(maybe_module.value()));
+
+  return std::make_shared<WasmHotLoadingImpl>(
+      std::move(maybe_environment.value()), std::move(maybe_runtime.value()),
+      configuration);
 }
 
 } // namespace whl

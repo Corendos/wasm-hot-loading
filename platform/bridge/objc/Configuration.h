@@ -3,16 +3,18 @@
 
 #import <Foundation/Foundation.h>
 
-/** Configuration to instantiate a wasm_hot_loading instance. */
+/**
+ * Copyright 2023 - Corentin Godeau
+ * SPDX-License-Identifier: MIT
+ * Configuration to instantiate a wasm_hot_loading instance.
+ */
 @interface Configuration : NSObject
 - (nonnull instancetype)initWithSampleModuleUrl:(nonnull NSString *)sampleModuleUrl
                                       publicKey:(nonnull NSString *)publicKey
-                                  wasmStackSize:(int32_t)wasmStackSize
-                                   wasmHeapSize:(int32_t)wasmHeapSize;
+                                  wasmStackSize:(int32_t)wasmStackSize;
 + (nonnull instancetype)configurationWithSampleModuleUrl:(nonnull NSString *)sampleModuleUrl
                                                publicKey:(nonnull NSString *)publicKey
-                                           wasmStackSize:(int32_t)wasmStackSize
-                                            wasmHeapSize:(int32_t)wasmHeapSize;
+                                           wasmStackSize:(int32_t)wasmStackSize;
 
 /** The URL to retrieve the Wasm module to load. */
 @property (nonatomic, readonly, nonnull) NSString * sampleModuleUrl;
@@ -22,8 +24,5 @@
 
 /** The stack size to use for the Wasm execution environment. */
 @property (nonatomic, readonly) int32_t wasmStackSize;
-
-/** The heap size to use for the Wasm execution environment. */
-@property (nonatomic, readonly) int32_t wasmHeapSize;
 
 @end

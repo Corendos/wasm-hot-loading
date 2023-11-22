@@ -17,7 +17,6 @@ class WasmHotLoading private constructor(val innerModule: InnerWasmHotLoading) {
 
         companion object {
             const val DEFAULT_STACK_SIZE = 1024 * 1024
-            const val DEFAULT_HEAP_SIZE = 64 * 1024
         }
 
 
@@ -30,7 +29,6 @@ class WasmHotLoading private constructor(val innerModule: InnerWasmHotLoading) {
                 moduleUrl!!,
                 publicKey!!,
                 stackSize ?: DEFAULT_STACK_SIZE,
-                heapSize ?: DEFAULT_HEAP_SIZE
             )
 
             return WasmHotLoading(InnerWasmHotLoading.create(config) ?: throw Exception("Instantiation error"))

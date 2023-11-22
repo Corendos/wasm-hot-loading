@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include <wasm/module_instance.hpp>
+#include <wasm/function.hpp>
+#include <wasm/runtime.hpp>
 #include <whl/messages.hpp>
 
 namespace whl {
@@ -15,13 +16,14 @@ struct WasmUpdatePayload {
   uint32_t value;
 
   /// Convert from a C++ UpdatePayload to a Wasm compatible struct.
-  static WasmUpdatePayload from(const wasm::ModuleInstance &instance,
-                                const UpdatePayload &payload);
+  static WasmUpdatePayload
+  from(wasm::Function<int32_t, int32_t> &allocate_function,
+       wasm::Runtime &runtime, const UpdatePayload &payload);
   /// Convert from a WasmUpdatePayload to a C++ compatible struct.
-  static UpdatePayload to(const wasm::ModuleInstance &instance,
+  static UpdatePayload to(wasm::Runtime &runtime,
                           const WasmUpdatePayload &wasm_payload);
   /// Release any allocated temporary memory.
-  static void release(const wasm::ModuleInstance &instance,
+  static void release(wasm::Function<void, int32_t, int32_t> &free_function,
                       const WasmUpdatePayload &payload);
 };
 
@@ -35,13 +37,14 @@ struct WasmSampleMessage {
   } payload;
 
   /// Convert from a C++ SampleMessage to a Wasm compatible struct.
-  static WasmSampleMessage from(const wasm::ModuleInstance &instance,
-                                const SampleMessage &message);
+  static WasmSampleMessage
+  from(wasm::Function<int32_t, int32_t> &allocate_function,
+       wasm::Runtime &runtime, const SampleMessage &message);
   /// Convert from a WasmSampleMessage to a C++ compatible struct.
-  static SampleMessage to(const wasm::ModuleInstance &instance,
+  static SampleMessage to(wasm::Runtime &runtime,
                           const WasmSampleMessage &wasm_message);
   /// Release any allocated temporary memory.
-  static void release(const wasm::ModuleInstance &instance,
+  static void release(wasm::Function<void, int32_t, int32_t> &free_function,
                       const WasmSampleMessage &wasm_message);
 };
 
@@ -57,13 +60,14 @@ struct WasmGlobalMessage {
   } payload;
 
   /// Convert from a C++ GlobalMessage to a Wasm compatible struct.
-  static WasmGlobalMessage from(const wasm::ModuleInstance &instance,
-                                const GlobalMessage &message);
+  static WasmGlobalMessage
+  from(wasm::Function<int32_t, int32_t> &allocate_function,
+       wasm::Runtime &runtime, const GlobalMessage &message);
   /// Convert from a WasmGlobalMessage to a C++ compatible struct.
-  static GlobalMessage to(const wasm::ModuleInstance &instance,
+  static GlobalMessage to(wasm::Runtime &runtime,
                           const WasmGlobalMessage &wasm_message);
   /// Release any allocated temporary memory.
-  static void release(const wasm::ModuleInstance &instance,
+  static void release(wasm::Function<void, int32_t, int32_t> &free_function,
                       const WasmGlobalMessage &wasm_message);
 };
 

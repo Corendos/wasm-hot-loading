@@ -25,11 +25,10 @@ private:
     friend ::djinni::JniClass<Configuration>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("io/corendos/whl/bridge/Configuration") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;II)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V") };
     const jfieldID field_sampleModuleUrl { ::djinni::jniGetFieldID(clazz.get(), "sampleModuleUrl", "Ljava/lang/String;") };
     const jfieldID field_publicKey { ::djinni::jniGetFieldID(clazz.get(), "publicKey", "Ljava/lang/String;") };
     const jfieldID field_wasmStackSize { ::djinni::jniGetFieldID(clazz.get(), "wasmStackSize", "I") };
-    const jfieldID field_wasmHeapSize { ::djinni::jniGetFieldID(clazz.get(), "wasmHeapSize", "I") };
 };
 
 } }  // namespace whl::bridge

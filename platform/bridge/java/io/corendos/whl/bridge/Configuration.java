@@ -3,7 +3,11 @@
 
 package io.corendos.whl.bridge;
 
-/** Configuration to instantiate a wasm_hot_loading instance. */
+/**
+ * Copyright 2023 - Corentin Godeau
+ * SPDX-License-Identifier: MIT
+ * Configuration to instantiate a wasm_hot_loading instance.
+ */
 public final class Configuration {
 
 
@@ -13,17 +17,13 @@ public final class Configuration {
 
     /*package*/ final int wasmStackSize;
 
-    /*package*/ final int wasmHeapSize;
-
     public Configuration(
             String sampleModuleUrl,
             String publicKey,
-            int wasmStackSize,
-            int wasmHeapSize) {
+            int wasmStackSize) {
         this.sampleModuleUrl = sampleModuleUrl;
         this.publicKey = publicKey;
         this.wasmStackSize = wasmStackSize;
-        this.wasmHeapSize = wasmHeapSize;
     }
 
     /** The URL to retrieve the Wasm module to load. */
@@ -41,18 +41,12 @@ public final class Configuration {
         return wasmStackSize;
     }
 
-    /** The heap size to use for the Wasm execution environment. */
-    public int getWasmHeapSize() {
-        return wasmHeapSize;
-    }
-
     @Override
     public String toString() {
         return "Configuration{" +
                 "sampleModuleUrl=" + sampleModuleUrl +
                 "," + "publicKey=" + publicKey +
                 "," + "wasmStackSize=" + wasmStackSize +
-                "," + "wasmHeapSize=" + wasmHeapSize +
         "}";
     }
 

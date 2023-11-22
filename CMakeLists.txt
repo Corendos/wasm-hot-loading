@@ -28,8 +28,8 @@ set(CURL_ENABLE_SSL OFF)
 add_subdirectory(deps/curl)
 add_subdirectory(deps/CLI11)
 add_subdirectory(deps/fmt)
-
-include(cmake/wamr_lib.cmake)
+add_subdirectory(deps/wasm3/source)
+target_compile_options(m3 PUBLIC -g)
 
 add_subdirectory(whl)
 add_subdirectory(platform)

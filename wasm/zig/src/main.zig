@@ -25,7 +25,7 @@ pub const std_options = struct {
 
         writer.print(level_txt ++ prefix2 ++ format, args) catch return;
 
-        var str: []const u8 = stream.getWritten();
+        const str: []const u8 = stream.getWritten();
 
         print(str.ptr, str.len);
     }
@@ -118,4 +118,13 @@ export fn register_scheduler(context: *GlobalContext, scheduler_id: u32, schedul
         context.global_scheduler_id = scheduler_id;
         std.log.debug("Global scheduler registered with id={}", .{scheduler_id});
     }
+}
+export fn allocate(size: usize) ?[*]u8 {
+    const result = std.heap.wasm_allocator.alloc(u8, size) catch return null;
+    result[0] = 'q';
+    return result.ptr;
+}
+
+export fn free(ptr: [*]u8, len: usize) void {
+    std.heap.wasm_allocator.free(ptr[0..len]);
 }

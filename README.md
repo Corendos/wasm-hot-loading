@@ -11,7 +11,7 @@ It's composed of three main parts:
 
 The sample core is responsible to wrap the Wasm Module into a C++ usable interface. The code for that is under the `whl` namespace and in the `whl/` sub-folder.
 
-It also contains convenience wrapper for the Wasm runtime we use, [WAMR](https://github.com/bytecodealliance/wasm-micro-runtime). It simply wraps the C interface in C++ classes.
+It also contains convenience wrapper for the Wasm runtime we use, [wasm3](https://github.com/wasm3/wasm3). It simply wraps the C interface in C++ classes.
 
 ## The Wasm module
 
@@ -41,7 +41,7 @@ git submodules update --init --recursive
 
 The required dependencies are:
 * [CMake](https://cmake.org/download/) - Any version >= 3.19 will work and you'll get an error message otherwise.
-* [Zig](https://ziglang.org/download/) - Zig is a pre-1.0 language so it's moving fast. This sample was tested with version `0.11.0`.
+* [Zig](https://ziglang.org/download/) - Zig is a pre-1.0 language so it's moving fast. This sample was tested with version `0.12.0-dev.1744+f29302f91`.
 * [Go](https://go.dev/doc/install) - Go language (This is a transitive dependency of BoringlSSL).
 
 ## Building the Sample Core
@@ -75,8 +75,6 @@ Options:
   --key TEXT:FILE REQUIRED    The Public key to use to verify Wasm module integrity
   --stack-size UINT:SIZE [b, kb(=1024b), ...]
                               The size of the stack that will be allocated for the module instance
-  --heap-size UINT:SIZE [b, kb(=1024b), ...]
-                              The size of the heap that will be allocated for the module instance
 ```
 
 ## Building the sample Wasm module
@@ -90,7 +88,7 @@ cd wasm/zig
 zig build -Drelease=<true|false>
 ```
 
-This will produce the `zig-out/lib/module.wasm` artifact that will ultimately be served by the Python Flask application.
+This will produce the `zig-out/bin/module.wasm` artifact that will ultimately be served by the Python Flask application.
 
 ## Running the local server
 

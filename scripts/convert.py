@@ -28,7 +28,11 @@ def batched(iterable: bytes, n: int) -> Iterator[bytes]:
     if n < 1:
         raise ValueError('n must be at least one')
     it = iter(iterable)
-    yield bytes([b for b in itertools.islice(it, n)])
+    while True:
+        batch = bytes([b for b in itertools.islice(it, n)]) 
+        if not batch:
+            return
+        yield batch
 
 
 def to_char_array(bytes: bytes) -> str:

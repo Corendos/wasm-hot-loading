@@ -1,4 +1,4 @@
 {
     "PRIVATE_KEY_FILE": "../certs/privkey.pem",
-    "STATIC_DIRECTORY": "../wasm/zig/zig-out/lib"
+    "STATIC_DIRECTORY": "../wasm/zig/zig-out/bin"
 }

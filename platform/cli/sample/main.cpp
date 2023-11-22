@@ -16,7 +16,6 @@
 #include <openssl/engine.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
-#include <wasm_runtime.h>
 
 // std includes
 #include <csignal>
@@ -41,9 +40,6 @@ struct CLIArguments {
   /// The size of the stack that will be allocated for each instance of the
   /// module.
   uint32_t stack_size{1024 * 1024};
-  /// The size of the heap that will be allocated for each instance of the
-  /// module.
-  uint32_t heap_size{1024 * 1024};
 };
 
 /// Promise controlling program lifetime.
@@ -67,20 +63,11 @@ int main(int argc, char **argv) {
          "--stack-size", cli_args.stack_size,
          "The size of the stack that will be allocated for the module instance")
       ->transform(CLI::AsSizeValue(false));
-  app.add_option(
-         "--heap-size", cli_args.heap_size,
-         "The size of the heap that will be allocated for the module instance")
-      ->transform(CLI::AsSizeValue(false));
 
   CLI11_PARSE(app, argc, argv)
 
   std::string public_key = fs::read_file_string(cli_args.public_key_path);
-  whl::Configuration config{cli_args.wasm_module_url, public_key, MB(1),
-                            KB(64)};
-  wasm_runtime_init();
-  DEFER({ wasm_runtime_destroy(); });
-
-  whl::SampleModule::register_native_exports();
+  whl::Configuration config{cli_args.wasm_module_url, public_key, MB(1)};
 
   auto wasm_hot_loading_instance = whl::WasmHotLoading::create(config);
 

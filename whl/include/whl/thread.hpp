@@ -6,8 +6,6 @@
 #include <functional>
 #include <thread>
 
-#include <wasm_export.h>
-
 namespace whl {
 
 class Thread {
@@ -54,9 +52,7 @@ private:
   template <typename Function, typename... Args>
   static void run(Function &&f, Args &&...args) {
     auto f2 = std::ref(f);
-    wasm_runtime_init_thread_env();
     f2(std::forward<Args>(args)...);
-    wasm_runtime_destroy_thread_env();
   }
 };
 

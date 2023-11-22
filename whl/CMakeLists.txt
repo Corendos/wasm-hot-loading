@@ -19,14 +19,13 @@ endif()
 set(WASM_SOURCES
     src/wasm/runtime.cpp
     src/wasm/module.cpp
-    src/wasm/module_instance.cpp
-    src/wasm/exec_env.cpp
-    src/wasm/function_inst.cpp
+    src/wasm/environment.cpp
+    src/wasm/function.cpp
 )
 
 add_library(whlcore STATIC ${WHL_SOURCES} ${WASM_SOURCES})
 target_include_directories(whlcore PUBLIC include)
-target_link_libraries(whlcore PUBLIC WAMR::vmlib fmt::fmt-header-only libcurl crypto)
+target_link_libraries(whlcore PUBLIC m3 fmt::fmt-header-only libcurl crypto)
 if(ANDROID)
 target_link_libraries(whlcore PUBLIC log)
 endif()

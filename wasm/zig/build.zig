@@ -20,19 +20,16 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(std.Build.StandardOptimizeOptionOptions{ .preferred_optimize_mode = .ReleaseSmall });
     const target = std.zig.CrossTarget.fromTarget(wasm_target);
 
-    const wasm_module = b.addSharedLibrary(std.Build.SharedLibraryOptions{
+    const wasm_module = b.addExecutable(std.Build.ExecutableOptions{
         .name = "module",
         .optimize = optimize,
         .target = target,
-        .root_source_file = std.Build.FileSource.relative("src/main.zig"),
+        .root_source_file = .{ .path = "src/main.zig" },
     });
     wasm_module.rdynamic = true;
+    wasm_module.entry = .disabled;
 
-    const wasm_module_install = b.addInstallArtifact(wasm_module, std.Build.Step.InstallArtifact.Options{
-        .dest_dir = .{ .override = .{ .lib = {} } },
-    });
-
-    b.getInstallStep().dependOn(&wasm_module_install.step);
+    b.installArtifact(wasm_module);
 }
 
 inline fn thisDir() [:0]const u8 {

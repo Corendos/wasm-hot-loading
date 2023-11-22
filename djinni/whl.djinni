@@ -9,8 +9,6 @@ configuration = record {
     public_key: string;
     # The stack size to use for the Wasm execution environment.
     wasm_stack_size: i32;
-    # The heap size to use for the Wasm execution environment.
-    wasm_heap_size: i32;
 }
 
 # An instance of the sample SDK.
