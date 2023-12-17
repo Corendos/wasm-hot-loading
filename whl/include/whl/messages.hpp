@@ -12,7 +12,7 @@ namespace whl {
 enum class SampleMessageType {
   NOOP,
   UPDATE,
-  GET_STATE,
+  QUERY,
 };
 
 /// Update payload type.
@@ -23,6 +23,8 @@ struct UpdatePayload {
 
   static UpdatePayload alloc(const std::string &name, uint32_t value);
   static void free(UpdatePayload &payload);
+
+  std::string name() const;
 };
 
 /// Represents a Message that needs to be handled by the SampleModule.
@@ -33,7 +35,7 @@ struct SampleMessage {
   union {
     /* void noop; */
     UpdatePayload update;
-    /* void get_state; */
+    /* void query; */
   } payload;
 };
 

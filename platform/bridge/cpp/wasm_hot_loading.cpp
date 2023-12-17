@@ -16,6 +16,10 @@
 
 namespace whl {
 
+/**
+ * Retrieve the WASM module from the specified URL. The public key is used to
+ * check that the module is signed. Returns std::nullopt in case of failure.
+ * */
 std::optional<std::string>
 retrieve_wasm_module(const std::string &wasm_module_url,
                      const std::string &public_key) {
@@ -51,9 +55,9 @@ retrieve_wasm_module(const std::string &wasm_module_url,
 }
 
 /**
- * Load the Wasm module from the given CLI arguments.
- * If a path to a file is given it will load from it, otherwise it falls back on
- * the embedded default module.
+ * Load the WASM module from the given arguments.
+ * If an URL is given it will load the module from it, otherwise it falls back
+ * on the embedded default module.
  * */
 std::optional<wasm::Module> load_module(wasm::Environment &environment,
                                         const std::string &wasm_module_url,
@@ -75,20 +79,25 @@ std::optional<wasm::Module> load_module(wasm::Environment &environment,
   return environment.parse_module(std::move(module_opt.value()));
 }
 
+// Interface for classes that can handle message sent to a Scheduler.
 class GlobalListener {
 public:
+  // Called when a message is received on the scheduler.
   virtual void on_message(GlobalMessage message) = 0;
 };
 
 class WasmHotLoadingImpl : public WasmHotLoading, public GlobalListener {
 public:
   WasmHotLoadingImpl(wasm::Environment environment, wasm::Runtime runtime,
-
                      const Configuration &configuration)
       : m_environment{std::move(environment)}, m_runtime{std::move(runtime)} {
+    // Create the scheduler associated with the SampleModule (which is a small
+    // wrapper between the WASM module and the C++ code).
     m_sample_scheduler = std::make_unique<
         task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>>(
         "sample");
+
+    // Create the scheduler associated with the main entry point.
     m_global_scheduler =
         std::make_unique<task::Scheduler<GlobalMessage, GlobalListener>>(
             "global");
@@ -96,14 +105,21 @@ public:
         .wasm_stack_size = static_cast<uint32_t>(configuration.wasm_stack_size),
     };
 
+    // Create the sample module.
     m_sample_module = std::make_unique<SampleModule>(
         m_runtime, sample_module_configuration, m_sample_scheduler.get(),
         m_global_scheduler.get());
 
+    // Associate ourselves as a Listener of the GlobalScheduler and start the
+    // scheduler loop in its own thread.
     m_global_scheduler->set_listener(this);
     m_global_scheduler->start();
     m_global_scheduler_thread = Thread([this] { m_global_scheduler->run(); });
 
+    // Associate the sample module as a Listener of the SampleScheduler and
+    // start the scheduler loop in its own thread.
+    // NOTE(Corentin): m_sample_module must be pinned to memory due to that.
+    m_sample_scheduler->set_listener(m_sample_module.get());
     m_sample_scheduler->start();
     m_sample_scheduler_thread = Thread([this] { m_sample_scheduler->run(); });
   }
@@ -126,21 +142,22 @@ public:
   }
 
   void get_state() override {
+    // Send a message to the SampleScheduler. We will receive the answer as a
+    // STATE message on the GlobalScheduler.
     SampleMessage message{
-        .type = SampleMessageType::GET_STATE,
+        .type = SampleMessageType::QUERY,
     };
     m_sample_scheduler->send(message);
   }
 
   void update(const std::string &name, int32_t value) override {
+    // Create an UPDATE message from the given parameters and send it to the
+    // SampleScheduler.
     SampleMessage message{
         .type = SampleMessageType::UPDATE,
     };
-    char *name_ptr = (char *)malloc(name.size());
-    std::copy(name.begin(), name.end(), name_ptr);
-    message.payload.update.name_ptr = name_ptr;
-    message.payload.update.name_len = name.size();
-    message.payload.update.value = static_cast<uint32_t>(value);
+    message.payload.update =
+        UpdatePayload::alloc(name, static_cast<uint32_t>(value));
     m_sample_scheduler->send(message);
   }
 
@@ -148,10 +165,11 @@ public:
     logger::info("Received GlobalMessage: {}", message);
     switch (message.type) {
     case GlobalMessageType::STATE:
+      // On UPDATE message, update the state of our state listener if we have
+      // one.
       if (m_state_listener) {
         m_state_listener->on_new_state(
-            std::string(message.payload.state.name_ptr,
-                        message.payload.state.name_len),
+            message.payload.state.name(),
             static_cast<int32_t>(message.payload.state.value));
       }
       break;
@@ -161,32 +179,46 @@ public:
   }
 
 private:
+  // WASM related variables.
   wasm::Environment m_environment;
   wasm::Runtime m_runtime;
+
+  // Bridge related variables.
+  std::shared_ptr<StateListener> m_state_listener{nullptr};
+
+  // GlobalScheduler related variables.
   std::unique_ptr<task::Scheduler<GlobalMessage, GlobalListener>>
       m_global_scheduler;
   whl::Thread m_global_scheduler_thread;
+
+  // SampleScheduler related variables.
   std::unique_ptr<
       task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>>
       m_sample_scheduler;
   whl::Thread m_sample_scheduler_thread;
+
+  // The SampleModule wrapping the WASM module.
   std::unique_ptr<SampleModule> m_sample_module{nullptr};
-  std::shared_ptr<StateListener> m_state_listener{nullptr};
 };
 
+/**
+ * Create an instance of the WasmHotLoading interface. */
 std::shared_ptr<WasmHotLoading>
 WasmHotLoading::create(const Configuration &configuration) {
+  // Try to create the WASM environment.
   auto maybe_environment = wasm::Environment::create();
   if (!maybe_environment.has_value()) {
     return nullptr;
   }
 
+  // Try to create the WASM runtime.
   auto maybe_runtime =
       maybe_environment->create_runtime(configuration.wasm_stack_size);
   if (!maybe_runtime.has_value()) {
     return nullptr;
   }
 
+  // Try to load the WASM module from the given configuration.
   std::optional<wasm::Module> maybe_module =
       load_module(*maybe_environment, configuration.sample_module_url,
                   configuration.public_key);
@@ -194,6 +226,7 @@ WasmHotLoading::create(const Configuration &configuration) {
     return nullptr;
   }
 
+  // Try to load the module on the runtime.
   maybe_runtime->load_module(std::move(maybe_module.value()));
 
   return std::make_shared<WasmHotLoadingImpl>(

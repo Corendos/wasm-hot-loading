@@ -26,4 +26,8 @@ void UpdatePayload::free(UpdatePayload &payload) {
   payload.name_len = 0;
 }
 
+std::string UpdatePayload::name() const {
+  return std::string(name_ptr, name_len);
+}
+
 } // namespace whl

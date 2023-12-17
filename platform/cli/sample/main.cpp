@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
   auto wasm_hot_loading_instance = whl::WasmHotLoading::create(config);
 
-  wasm_hot_loading_instance->update("Hello, world", 42);
+  wasm_hot_loading_instance->update("WASM", 42);
   wasm_hot_loading_instance->get_state();
 
   std::signal(SIGINT, signal_handler);

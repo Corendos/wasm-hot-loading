@@ -33,7 +33,7 @@ struct WasmSampleMessage {
   union {
     /// void noop;
     WasmUpdatePayload update;
-    /// void get_state;
+    /// void query;
   } payload;
 
   /// Convert from a C++ SampleMessage to a Wasm compatible struct.

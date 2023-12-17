@@ -22,7 +22,7 @@ template <> struct fmt::formatter<whl::SampleMessageType> {
     case whl::SampleMessageType::UPDATE:
       return fmt::format_to(ctx.out(), "update");
       break;
-    case whl::SampleMessageType::GET_STATE:
+    case whl::SampleMessageType::QUERY:
       return fmt::format_to(ctx.out(), "get_state");
       break;
     default:
@@ -52,7 +52,7 @@ template <> struct fmt::formatter<whl::SampleMessage> {
                                              message.payload.update.name_len},
                             message.payload.update.value);
       break;
-    case whl::SampleMessageType::GET_STATE:
+    case whl::SampleMessageType::QUERY:
       return fmt::format_to(ctx.out(), "{} {{ }}", message.type);
       break;
     default:

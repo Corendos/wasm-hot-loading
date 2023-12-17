@@ -31,8 +31,6 @@ public:
 
   void on_message(SampleMessage message) override;
 
-  static bool register_native_exports();
-
 private:
   static int32_t repeat_task(void *userdata, int32_t function_index,
                              int32_t context, int32_t delay_us);
@@ -55,6 +53,7 @@ private:
   wasm::Function<void, int32_t, int32_t> m_on_message_function;
   wasm::Function<void, int32_t, int32_t, int32_t, int32_t>
       m_register_scheduler_function;
+  wasm::Function<void, int32_t, int32_t, int32_t> m_call_function;
   int32_t m_module_context;
 
   task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>
