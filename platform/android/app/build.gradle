@@ -11,14 +11,6 @@ project.ext {
 }
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file('/home/corendos/.android/debug.keystore')
-        }
-        rc {
-            storeFile file('/home/corendos/.android/debug.keystore')
-        }
-    }
     namespace 'io.corendos.wasmhotloading'
     compileSdk 33
 
