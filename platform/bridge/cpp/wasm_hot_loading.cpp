@@ -8,7 +8,6 @@
 #include <whl/network/http.hpp>
 #include <whl/sample_module.hpp>
 #include <whl/state_listener.hpp>
-#include <whl/thread.hpp>
 #include <whl/utils.hpp>
 #include <whl/wasm_hot_loading.hpp>
 
@@ -114,14 +113,16 @@ public:
     // scheduler loop in its own thread.
     m_global_scheduler->set_listener(this);
     m_global_scheduler->start();
-    m_global_scheduler_thread = Thread([this] { m_global_scheduler->run(); });
+    m_global_scheduler_thread =
+        std::thread([this] { m_global_scheduler->run(); });
 
     // Associate the sample module as a Listener of the SampleScheduler and
     // start the scheduler loop in its own thread.
     // NOTE(Corentin): m_sample_module must be pinned to memory due to that.
     m_sample_scheduler->set_listener(m_sample_module.get());
     m_sample_scheduler->start();
-    m_sample_scheduler_thread = Thread([this] { m_sample_scheduler->run(); });
+    m_sample_scheduler_thread =
+        std::thread([this] { m_sample_scheduler->run(); });
   }
 
   ~WasmHotLoadingImpl() override {
@@ -189,13 +190,13 @@ private:
   // GlobalScheduler related variables.
   std::unique_ptr<task::Scheduler<GlobalMessage, GlobalListener>>
       m_global_scheduler;
-  whl::Thread m_global_scheduler_thread;
+  std::thread m_global_scheduler_thread;
 
   // SampleScheduler related variables.
   std::unique_ptr<
       task::Scheduler<SampleMessage, task::MessageListener<SampleMessage>>>
       m_sample_scheduler;
-  whl::Thread m_sample_scheduler_thread;
+  std::thread m_sample_scheduler_thread;
 
   // The SampleModule wrapping the WASM module.
   std::unique_ptr<SampleModule> m_sample_module{nullptr};
